@@ -15,36 +15,56 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  role UserRole
+  id                  String     @id @default(uuid())
+  name                String
+  email               String     @unique
+  password            String
+  role                UserRole
   needsPasswordChange Boolean
-  status UserStatus
-  millId String
-  mill Mill @relation(fields: [millId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  status              UserStatus
+  millId              String
+  mill                Mill       @relation(fields: [millId], references: [id])
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
 
   @@map("users")
 }
 
 model Mill {
-  id String @id @default(uuid())
-  name String
-  location String
+  id        String     @id @default(uuid())
+  name      String
+  location  String
   ownerName String
-  phone String
-  email String? @unique
-  status MillStatus @default(ACTIVE)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  phone     String
+  email     String?    @unique
+  status    MillStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
-  users       User[]
+  users   User[]
+  ledgers Ledger[]
 
   @@map("mills")
+}
+
+model Ledger {
+  id              String     @id @default(uuid())
+  millId          String
+  mill            Mill       @relation(fields: [millId], references: [id])
+  type            LedgerType
+  amount          Decimal
+  description     String?
+  reference       String?
+  transactionDate DateTime   @default(now())
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@map("ledgers")
+}
+
+enum LedgerType {
+  CREDIT
+  DEBIT
 }
 
 enum UserRole {
