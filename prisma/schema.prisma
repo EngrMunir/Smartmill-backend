@@ -22,10 +22,29 @@ model User {
   role UserRole
   needsPasswordChange Boolean
   status UserStatus
+  millId String
+  mill Mill @relation(fields: [millId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+
   @@map("users")
+}
+
+model Mill {
+  id String @id @default(uuid())
+  name String
+  location String
+  ownerName String
+  phone String
+  email String? @unique
+  status MillStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users       User[]
+
+  @@map("mills")
 }
 
 enum UserRole {
@@ -37,4 +56,10 @@ enum UserRole {
 enum UserStatus {
   ACTIVE
   BLOCKED
+}
+
+enum MillStatus {
+  ACTIVE
+  INACTIVE
+  CLOSED
 }
