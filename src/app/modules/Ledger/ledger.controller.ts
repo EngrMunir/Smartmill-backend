@@ -1,57 +1,65 @@
 import { Request, Response } from 'express';
+import catchAsync from '../../../shared/catchAsync';
+import sendResponse from '../../../shared/sendResponse';
 import { LedgerService } from './ledger.service';
 
-const create = async (req: Request, res: Response) => {
-  try {
-    const result = await LedgerService.createLedger(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    console.error('Ledger create error:', error);
-    res.status(500).json({ error: 'Failed to create ledger entry' });
-  }
-};
+const createLedger = catchAsync(async (req: Request, res: Response) => {
+  const result = await LedgerService.createLedger(req.body);
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: 'Ledger entry created successfully!',
+    data: result,
+  });
+});
 
-const getAll = async (_req: Request, res: Response) => {
-  try {
-    const result = await LedgerService.getAllLedgers();
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch ledgers' });
-  }
-};
+const getAllLedgers = catchAsync(async (req: Request, res: Response) => {
+  const result = await LedgerService.getAllLedgers();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'All ledger entries retrieved successfully!',
+    data: result,
+  });
+});
 
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const result = await LedgerService.getLedgerById(req.params.id);
-    if (!result) return res.status(404).json({ error: 'Ledger not found' });
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch ledger' });
-  }
-};
+const getSingleLedger = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await LedgerService.getSingleLedger(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Ledger entry retrieved successfully!',
+    data: result,
+  });
+});
 
-const update = async (req: Request, res: Response) => {
-  try {
-    const result = await LedgerService.updateLedger(req.params.id, req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update ledger' });
-  }
-};
+const updateLedger = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await LedgerService.updateLedger(id, req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Ledger entry updated successfully!',
+    data: result,
+  });
+});
 
-const remove = async (req: Request, res: Response) => {
-  try {
-    await LedgerService.deleteLedger(req.params.id);
-    res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete ledger' });
-  }
-};
+const deleteLedger = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await LedgerService.deleteLedger(id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Ledger entry deleted successfully!',
+    data: result,
+  });
+});
 
-export const LedgerController ={
-    remove,
-    update,
-    create,
-    getAll,
-    getById
-}
+export const LedgerController = {
+  createLedger,
+  getAllLedgers,
+  getSingleLedger,
+  updateLedger,
+  deleteLedger,
+};

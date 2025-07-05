@@ -41,8 +41,18 @@ model Mill {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  users   User[]
-  ledgers Ledger[]
+  users       User[]
+  ledgers     Ledger[]
+  suppliers   Supplier[]
+  inventories Inventory[]
+  customers   Customer[]
+  products    Product[]
+  sales       Sale[]
+  purchases   Purchase[]
+  expenses    Expense[]
+  attendances Attendance[]
+  salaries    Salary[]
+  workers     Worker[]
 
   @@map("mills")
 }
@@ -56,10 +66,227 @@ model Ledger {
   description     String?
   reference       String?
   transactionDate DateTime   @default(now())
+  partyType       PartyType
+  partyId         String
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
   @@map("ledgers")
+}
+
+model Supplier {
+  id            String         @id @default(uuid())
+  millId        String
+  mill          Mill           @relation(fields: [millId], references: [id])
+  name          String
+  contactPerson String?
+  phone         String
+  email         String
+  address       String?
+  status        SupplierStatus @default(ACTIVE)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  purchases Purchase[]
+
+  @@map("suppliers")
+}
+
+model Inventory {
+  id              String   @id @default(uuid())
+  millId          String
+  mill            Mill     @relation(fields: [millId], references: [id])
+  itemName        String
+  quantity        Decimal
+  unit            String?
+  note            String?
+  transactionDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("inventories")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  address   String?
+  email     String?  @unique
+  millId    String
+  mill      Mill     @relation(fields: [millId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sales Sale[]
+
+  @@map("customers")
+}
+
+model Product {
+  id          String  @id @default(uuid())
+  millId      String
+  mill        Mill    @relation(fields: [millId], references: [id])
+  name        String
+  category    String
+  unit        String // e.g., kg, ton, bag
+  price       Decimal
+  stockQty    Int
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sales     Sale[]
+  purchases Purchase[]
+
+  @@map("products")
+}
+
+model Sale {
+  id         String   @id @default(uuid())
+  millId     String
+  mill       Mill     @relation(fields: [millId], references: [id])
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  unitPrice  Decimal
+  totalPrice Decimal
+  saleDate   DateTime @default(now())
+  notes      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sales")
+}
+
+model Purchase {
+  id           String   @id @default(uuid())
+  millId       String
+  mill         Mill     @relation(fields: [millId], references: [id])
+  supplierId   String
+  supplier     Supplier @relation(fields: [supplierId], references: [id])
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  quantity     Int
+  unitPrice    Decimal
+  totalPrice   Decimal
+  purchaseDate DateTime @default(now())
+  notes        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("purchases")
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  millId      String
+  mill        Mill     @relation(fields: [millId], references: [id])
+  title       String
+  amount      Decimal
+  category    String
+  expenseDate DateTime @default(now())
+  notes       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("expenses")
+}
+
+model Worker {
+  id        String       @id @default(uuid())
+  millId    String
+  mill      Mill         @relation(fields: [millId], references: [id])
+  name      String
+  role      String
+  phone     String
+  salary    Decimal
+  status    WorkerStatus @default(ACTIVE)
+  joinedAt  DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  attendances Attendance[]
+  salaries    Salary[]
+
+  @@map("workers")
+}
+
+model Attendance {
+  id       String           @id @default(uuid())
+  millId   String
+  mill     Mill             @relation(fields: [millId], references: [id])
+  workerId String
+  worker   Worker           @relation(fields: [workerId], references: [id])
+  date     DateTime
+  status   AttendanceStatus // PRESENT, ABSENT, LEAVE
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workerId, date])
+  @@map("attendances")
+}
+
+model Salary {
+  id            String       @id @default(uuid())
+  millId        String
+  workerId      String
+  month         String // Format: "YYYY-MM"
+  baseSalary    Decimal
+  bonus         Decimal?
+  deduction     Decimal?
+  totalPaid     Decimal
+  paymentDate   DateTime
+  paymentStatus SalaryStatus @default(PAID)
+
+  mill   Mill   @relation(fields: [millId], references: [id])
+  worker Worker @relation(fields: [workerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workerId, month])
+  @@map("salaries")
+}
+
+enum SalaryStatus {
+  PAID
+  UNPAID
+  PARTIAL
+}
+
+enum WorkerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LEAVE
+}
+
+enum InventoryType {
+  IN
+  OUT
+}
+
+enum PartyType {
+  CUSTOMER
+  SUPPLIER
+}
+
+enum SupplierStatus {
+  ACTIVE
+  INACTIVE
 }
 
 enum LedgerType {

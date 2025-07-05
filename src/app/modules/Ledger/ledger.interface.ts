@@ -1,13 +1,14 @@
 export type LedgerType = 'CREDIT' | 'DEBIT';
+export type PartyType = 'CUSTOMER' | 'SUPPLIER';
 
 export interface ILedger {
-  id: string;
+  id?: string;
   millId: string;
   type: LedgerType;
   amount: number;
   description?: string;
   reference?: string;
-  transactionDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  transactionDate?: Date;
+  partyType: PartyType;
+  partyId: string;
 }
