@@ -1,6 +1,7 @@
 import { InventoryModel } from './inventory.model';
 import { IInventory } from './inventory.interface';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../../../../generated/prisma';
+
 
 export const createInventory = async (payload: Omit<IInventory, 'id' | 'createdAt' | 'updatedAt'>) => {
   return await InventoryModel.create({

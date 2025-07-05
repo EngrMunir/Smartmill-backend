@@ -1,7 +1,5 @@
-import { PrismaClient } from "@/generated/prisma";
+import prisma from "../../../shared/prisma";
 import { ISale } from "./sale.interface";
-
-const prisma = new PrismaClient();
 
 export const SaleModel = {
   create: async (data: ISale) => {

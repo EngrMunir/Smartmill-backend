@@ -1,5 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from "../../../shared/prisma";
 
 export const SupplierModel = prisma.supplier;

@@ -1,6 +1,3 @@
-import { PrismaClient } from "../../../../generated/prisma";
-
-
-const prisma = new PrismaClient();
+import prisma from "../../../shared/prisma";
 
 export const UserModel = prisma.user;

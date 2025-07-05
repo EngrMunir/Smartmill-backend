@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../shared/prisma';
 import { ILedger } from './ledger.interface';
 
-const prisma = new PrismaClient();
 
 const createLedger = async (payload: ILedger) => {
   const newLedger = await prisma.ledger.create({
