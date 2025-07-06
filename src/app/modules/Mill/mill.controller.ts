@@ -1,27 +1,35 @@
 import { Request, Response } from 'express';
-import * as MillService from './mill.service';
+import { MillServices } from './mill.service';
 
-export const create = async (req: Request, res: Response) => {
-  const result = await MillService.createMill(req.body);
+const createMill = async (req: Request, res: Response) => {
+  const result = await MillServices.createMill(req.body);
   res.status(201).json(result);
 };
 
-export const getAll = async (_: Request, res: Response) => {
-  const result = await MillService.getAllMills();
+const getAllMill = async (_: Request, res: Response) => {
+  const result = await MillServices.getAllMills();
   res.json(result);
 };
 
-export const getById = async (req: Request, res: Response) => {
-  const result = await MillService.getMillById(req.params.id);
+const getMillById = async (req: Request, res: Response) => {
+  const result = await MillServices.getMillById(req.params.id);
   res.json(result);
 };
 
-export const update = async (req: Request, res: Response) => {
-  const result = await MillService.updateMill(req.params.id, req.body);
+const updateMill = async (req: Request, res: Response) => {
+  const result = await MillServices.updateMill(req.params.id, req.body);
   res.json(result);
 };
 
-export const remove = async (req: Request, res: Response) => {
-  await MillService.deleteMill(req.params.id);
+const removeMill = async (req: Request, res: Response) => {
+  await MillServices.deleteMill(req.params.id);
   res.status(204).send();
 };
+
+export const MillController ={
+  createMill,
+  getAllMill,
+  getMillById,
+  removeMill,
+  updateMill
+}

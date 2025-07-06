@@ -1,12 +1,12 @@
 import express from 'express';
-import * as MillController from './mill.controller';
+import { MillController } from './mill.controller';
 
 const router = express.Router();
 
-router.post('/', MillController.create);
-router.get('/', MillController.getAll);
-router.get('/:id', MillController.getById);
-router.patch('/:id', MillController.update);
-router.delete('/:id', MillController.remove);
+router.post('/', MillController.createMill);
+router.get('/', MillController.getAllMill);
+router.get('/:id', MillController.getMillById);
+router.patch('/:id', MillController.updateMill);
+router.delete('/:id', MillController.removeMill);
 
 export const MillRoutes = router;

@@ -11,17 +11,22 @@ import { ExpenseRoutes } from '../modules/Expense/expense.route';
 import { ReportRoutes } from '../modules/Report/report.route';
 import { WorkerRoutes } from '../modules/Worker/worker.route';
 import { AttendanceRoutes } from '../modules/Attendance/attendance.route';
+import { AuthRoutes } from '../modules/Auth/auth.route';
 
 const router = express.Router();
 
 const moduleRoutes =[
     {
-        path:'/mills',
-        route: MillRoutes
+        path:'/auth',
+        route:AuthRoutes
     },
     {
         path:'/users',
         route:UserRoutes
+    },
+    {
+        path:'/mills',
+        route: MillRoutes
     },
     {
         path:'/suppliers',

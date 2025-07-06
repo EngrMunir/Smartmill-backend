@@ -20,7 +20,7 @@ model User {
   email               String     @unique
   password            String
   role                UserRole
-  needsPasswordChange Boolean
+  needsPasswordChange Boolean @default(true)
   status              UserStatus
   millId              String
   mill                Mill       @relation(fields: [millId], references: [id])

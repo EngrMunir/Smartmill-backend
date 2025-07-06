@@ -21,11 +21,12 @@ const updateCustomer = async (id: string, payload: Partial<ICustomer>) => {
     });
     return result;
   };
+  
 const deleteCustomer = async (id: string) => {
     const result = await CustomerModel.delete({ where: { id } });
     return result;
   };
-  
+
 export const CustomerService = {
   createCustomer,
   getAllCustomers,
